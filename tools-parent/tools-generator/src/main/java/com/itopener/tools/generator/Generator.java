@@ -15,13 +15,14 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import com.mysql.cj.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.mysql.jdbc.StringUtils;
 
 public class Generator {
 	
-	private final Logger log = Logger.getLogger(Generator.class);
+	private final Logger log = LoggerFactory.getLogger(Generator.class);
 	
 	/**
 	 * @desc: 入口

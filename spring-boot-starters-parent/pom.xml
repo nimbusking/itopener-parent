@@ -11,6 +11,7 @@
 	<name>spring-boot-starters-parent</name>
 	<url>http://maven.apache.org</url>
 	<packaging>pom</packaging>
+	<description>itopener基础父框架组件实现</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>

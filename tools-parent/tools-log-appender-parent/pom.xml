@@ -17,5 +17,6 @@
 	</properties>
 	<modules>
 		<module>tools-log-appender-kafka-logback</module>
+		<module>tools-log-appender-log4j2</module>
 	</modules>
 </project>

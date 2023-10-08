@@ -36,6 +36,7 @@
 		<dubbo-spring-boot-starter.version>0.1.0</dubbo-spring-boot-starter.version>
 		<dubbo.version>2.5.10</dubbo.version>
 		<mysql-connector-java.version>8.0.33</mysql-connector-java.version>
+		<log4j2.version>2.20.0</log4j2.version>
 	</properties>
 
 	<dependencyManagement>
@@ -196,6 +197,16 @@
 				<groupId>mysql</groupId>
 				<artifactId>mysql-connector-java</artifactId>
 				<version>${mysql-connector-java.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-core</artifactId>
+				<version>${log4j2.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-api</artifactId>
+				<version>${log4j2.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
