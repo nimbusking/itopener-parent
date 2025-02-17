@@ -40,8 +40,10 @@ public class RedisCaffeineCache extends AbstractValueAdaptingCache {
 	
 	private String topic = "cache:redis:caffeine:topic";
 	
-	private Map<String, ReentrantLock> keyLockMap = new ConcurrentHashMap<String, ReentrantLock>();
-	
+	private final Map<String, ReentrantLock> keyLockMap = new ConcurrentHashMap<String, ReentrantLock>();
+
+	private final Object lockObj = new Object();
+
 	protected RedisCaffeineCache(boolean allowNullValues) {
 		super(allowNullValues);
 	}
@@ -132,8 +134,9 @@ public class RedisCaffeineCache extends AbstractValueAdaptingCache {
 	public ValueWrapper putIfAbsent(Object key, Object value) {
 		Object cacheKey = getKey(key);
 		Object prevValue = null;
-		// 考虑使用分布式锁，或者将redis的setIfAbsent改为原子性操作
-		synchronized (key) {
+		// 综合考虑并发场景，再按需是否考虑使用分布式锁，或者将redis的setIfAbsent改为原子性操作
+		// 这里只简单处理一下单机并发
+		synchronized (lockObj) {
 			prevValue = stringKeyRedisTemplate.opsForValue().get(cacheKey);
 			if(prevValue == null) {
 				long expire = getExpire();
