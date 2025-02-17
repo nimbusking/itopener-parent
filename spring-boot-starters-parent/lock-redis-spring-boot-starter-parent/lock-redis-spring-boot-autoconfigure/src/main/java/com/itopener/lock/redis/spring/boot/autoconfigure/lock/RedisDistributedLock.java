@@ -1,25 +1,22 @@
 package com.itopener.lock.redis.spring.boot.autoconfigure.lock;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.util.StringUtils;
-
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisCluster;
-import redis.clients.jedis.JedisCommands;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
- * @author fuwei.deng
- * @date 2017年6月14日 下午3:11:14
- * @version 1.0.0
+ *
+ * @author nimbusk
  */
 public class RedisDistributedLock extends AbstractDistributedLock {
 	
@@ -65,18 +62,15 @@ public class RedisDistributedLock extends AbstractDistributedLock {
 	
 	private boolean setRedis(String key, long expire) {
 		try {
-			String result = redisTemplate.execute(new RedisCallback<String>() {
-				@Override
-				public String doInRedis(RedisConnection connection) throws DataAccessException {
-					JedisCommands commands = (JedisCommands) connection.getNativeConnection();
-					String uuid = UUID.randomUUID().toString();
-					lockFlag.set(uuid);
-					return commands.set(key, uuid, "NX", "PX", expire);
-				}
-			});
-			return !StringUtils.isEmpty(result);
+			String uuid = UUID.randomUUID().toString();
+			lockFlag.set(uuid);
+			// 直接用RedisTemplate封装的 setIfAbsent 来调用 SET NX
+			Boolean result = redisTemplate.opsForValue().setIfAbsent(key, uuid, expire, TimeUnit.MILLISECONDS);
+			if (Boolean.TRUE.equals(result)) {
+				return true;
+			}
 		} catch (Exception e) {
-			logger.error("set redis occured an exception", e);
+			logger.error("set redis occurred an exception", e);
 		}
 		return false;
 	}
